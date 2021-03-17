@@ -1,0 +1,30 @@
+<%-include("./partials/header")-%>
+<head>
+    <link rel="stylesheet" href="/public/auth-form.css">
+</head>
+<div class="text-center">
+    <form class="form-signin" action="/user/auth/signup" method="POST">
+        <h1 class="h3 mb-3 font-weight-normal">Add Task Here</h1>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" name="email" required autofocus>
+        <div class="input-group mb-3" style="margin-top: 10px;">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Designation</label>
+            </div>
+            <select class="custom-select" id="inputGroupSelect01" name="Type">
+              <option selected>Choose...</option>
+              <option value="Worker">Worker</option>
+              <option value="Manager">Manager</option>
+            </select>
+          </div>
+        <label for="inputName" class="sr-only">Name</label>
+        <input type="text" class="form-control" placeholder="Name"  name="name" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" required>
+        <label for="inputPassword" class="sr-only">Confirm Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="confirm password" name="confirmpass" required>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+      </form>
+</div>
+<%-include("./partials/footer")-%>
