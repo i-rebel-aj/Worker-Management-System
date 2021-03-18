@@ -3,28 +3,29 @@
     <link rel="stylesheet" href="/public/auth-form.css">
 </head>
 <div class="text-center">
-    <form class="form-signin" action="/user/auth/signup" method="POST">
+    <form class="form-signin" action="/task" method="POST">
         <h1 class="h3 mb-3 font-weight-normal">Add Task Here</h1>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" name="email" required autofocus>
-        <div class="input-group mb-3" style="margin-top: 10px;">
-            <div class="input-group-prepend">
-              <label class="input-group-text" for="inputGroupSelect01">Designation</label>
-            </div>
-            <select class="custom-select" id="inputGroupSelect01" name="Type">
-              <option selected>Choose...</option>
-              <option value="Worker">Worker</option>
-              <option value="Manager">Manager</option>
-            </select>
-          </div>
-        <label for="inputName" class="sr-only">Name</label>
-        <input type="text" class="form-control" placeholder="Name"  name="name" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" required>
-        <label for="inputPassword" class="sr-only">Confirm Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="confirm password" name="confirmpass" required>
-
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+        <label for="inputName" class="sr-only">Task Name</label>
+        <input type="text" class="form-control" placeholder="Task Name" name="task_name" required autofocus>
+        <div class="input-grou" style="margin-top: 10px;">
+          <label class="input-group-text" for="inputGroupSelect01">Select Workers</label>
+        </div> 
+        <select name="assignedworkers" multiple="multiple" required>
+          <%workers.forEach(function(worker){%>
+            <option value="<%=worker.email%>"><%=worker.email%></option>  
+          <%})%>
+        </select> 
+        <!--
+          <%workers.forEach(function(worker){%>
+              <input name="<%=worker.email%>" type="checkbox"/>
+              <label for="worker-email"><%=worker.email%></label>
+              <br>  
+            <%})%>
+          -->
+        <label for="inputName" class="sr-only">Task description</label>
+        <input type="text" class="form-control" placeholder="Task Description"  name="description" required autofocus>
+        <input type="date" id="birthday" name="deadline">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
       </form>
 </div>
 <%-include("./partials/footer")-%>

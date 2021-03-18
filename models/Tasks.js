@@ -1,5 +1,5 @@
 const mongoose=require("mongoose")
-const bcrypt = require("bcrypt");
+const {User}= require('../models/User')
 const taskSchema=new mongoose.Schema(
     {
         name:{
@@ -18,12 +18,25 @@ const taskSchema=new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },
-        docsFilePath:[
-            {
-                path: String
-            }
-        ],
+        docsFilePath:{
+            ManagerDocs:[
+                {
+                    path: String,
+                    description: String
+                }
+            ],
+            WorkerDocs:[
+                {
+                    path: String,
+                    discription: String
+                }
+            ]
+        },
         completeStatus:{
+            type: Boolean,
+            default: false
+        },
+        underVerificationStatus:{
             type: Boolean,
             default: false
         },

@@ -43,13 +43,14 @@ app.use(function(req, res, next) {
 //Requiring Routes
 const authRoutes=require('./routes/auth')
 const managerRoutes=require('./routes/manager')
+const taskRoutes=require('./routes/tasks')
 app.get('/', (req, res)=>{
     res.render('home')
 })
 
 app.use('/user/auth', authRoutes)
 app.use('/manager', managerRoutes)
-
+app.use('/task', taskRoutes)
 app.get('*', (req, res)=>{
     res.render('error')
 })

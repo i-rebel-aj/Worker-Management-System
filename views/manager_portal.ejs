@@ -1,87 +1,97 @@
 <%-include("./partials/header")-%>
 <head>
-       <link rel="stylesheet" href="/public/manager_portal.css">
+  <link rel="stylesheet" href="/public/manager_portal.css" />
 </head>
 <div class="container-fluid">
   <div class="row">
-    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+    <nav
+      id="sidebarMenu"
+      class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"
+    >
       <div class="sidebar-sticky pt-3">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" href="/manager">
-              <span data-feather="home"></span>
-              Assigned Tasks 
-            </a>
+            <a class="nav-link" href="/manager"> All Tasks </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/task">
-              <span data-feather="file"></span>
-              Add a Task
-            </a>
-          </li>
-        </ul>
-
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>Saved reports</span>
-          <a class="d-flex align-items-center text-muted" href="#" aria-label="Add a new report">
-            <span data-feather="plus-circle"></span>
-          </a>
-        </h6>
-        <ul class="nav flex-column mb-2">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Current month
-            </a>
+            <a class="nav-link" href="/task"> Assign Task </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Last quarter
-            </a>
+            <a class="nav-link" href="/task"> Completed Tasks </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Social engagement
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Year-end sale
-            </a>
+            <a class="nav-link" href="/task"> Pending Tasks </a>
           </li>
         </ul>
       </div>
     </nav>
-
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+      >
         <h1 class="h2">Dashboard</h1>
       </div>
-      <h2>Section title</h2>
-      <div class="table-responsive">
-        <table class="table table-striped table-sm">
-          <thead>
+      <div class="container">
+        <h4>Tasks assigned by you</h4>
+        <table class="table table-hover">
+          <thead class="thead-dark">
             <tr>
-              <th>#</th>
-              <th>Header</th>
-              <th>Header</th>
-              <th>Header</th>
-              <th>Header</th>
+              <th scope="col">Task Name</th>
+              <th scope="col">Assigned To</th>
+              <th scope="col">Status</th>
+              <th scope="col">Assigned Date</th>
+              <th scope="col">Deadline</th>
+              <th scope="col">View Submission</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1,001</td>
-              <td>Lorem</td>
-              <td>ipsum</td>
-              <td>dolor</td>
-              <td>sit</td>
-            </tr>
+            <% tasks.forEach(task => { %>
+              <tr>
+                <th><%= task.name %> </th>
+                <td><% task.AssignedTo.forEach((person)=>{%>
+                    <%= person.email %>
+                  <%})  %> </td>
+                <td><% if(!task.completeStatus){%>
+                  <span class="badge badge-pill badge-warning">Pending</span>
+                  <%}else{%>
+                    <span class="badge badge-pill badge-success">Done</span>
+                    <%} %> </td>
+                <td><%= task.createdAt.toDateString() %></td>
+                <td><%= task.deadline.toDateString() %> </td>
+                <td>@mdo</td>
+              </tr>
+            <% }); %> 
           </tbody>
         </table>
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="/manager/alltasks/1">First</a></li>
+            <%var limit%> <%var start%> 
+            <% console.log(currentPage) %> 
+            <% console.log(totalPages) %> 
+            <%if(currentPage>=2){%>
+              <%limit=Math.min(totalPages, currentPage+2)%>
+              <% console.log(limit) %> 
+              <%start=currentPage-1%> 
+              <% console.log(start) %> 
+            <%}else{%> 
+              <%limit=Math.min(totalPages,currentPage+3)%> 
+              <%start=1%> 
+            <%}%> 
+            <%for(let i=start;i<=limit;i++){%> 
+              <%if(i==currentPage){%>
+                <li class="page-item active" aria-current="page">
+                  <a class="page-link" href="/manager/alltasks/<%=i%>"><%=i%> <span class="sr-only">(current)</span></a>
+                </li>
+              <%}else{%>
+                <li class="page-item">
+                  <a class="page-link" href="/manager/alltasks/<%=i%>"><%=i%></a>
+                </li>
+              <%}%> 
+            <%}%>
+            <li class="page-item"><a class="page-link" href="/manager/alltasks/<%=totalPages%>">Last</a></li>
+          </ul>
+        </nav>
       </div>
     </main>
   </div>
