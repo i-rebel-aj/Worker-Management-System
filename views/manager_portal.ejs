@@ -11,16 +11,16 @@
       <div class="sidebar-sticky pt-3">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" href="/manager"> All Tasks </a>
+            <a class="nav-link" href="/manager/tasks"> All Tasks </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/task"> Assign Task </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/task"> Completed Tasks </a>
+            <a class="nav-link" href="/manager/tasks/completed"> Completed Tasks </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/task"> Pending Tasks </a>
+            <a class="nav-link" href="/manager/tasks/pending"> Pending Tasks </a>
           </li>
         </ul>
       </div>
@@ -42,6 +42,7 @@
               <th scope="col">Assigned Date</th>
               <th scope="col">Deadline</th>
               <th scope="col">View Submission</th>
+              <th scope="col">Edit task</th>
             </tr>
           </thead>
           <tbody>
@@ -59,6 +60,8 @@
                 <td><%= task.createdAt.toDateString() %></td>
                 <td><%= task.deadline.toDateString() %> </td>
                 <td>@mdo</td>
+                <!--Only to redirect to task form-->
+                <td><a href="/task/<%=task._id%>/edit" class="btn btn-md btn-info">Edit Task</a></td>
               </tr>
             <% }); %> 
           </tbody>
@@ -67,13 +70,9 @@
           <ul class="pagination">
             <li class="page-item"><a class="page-link" href="/manager/alltasks/1">First</a></li>
             <%var limit%> <%var start%> 
-            <% console.log(currentPage) %> 
-            <% console.log(totalPages) %> 
             <%if(currentPage>=2){%>
               <%limit=Math.min(totalPages, currentPage+2)%>
-              <% console.log(limit) %> 
               <%start=currentPage-1%> 
-              <% console.log(start) %> 
             <%}else{%> 
               <%limit=Math.min(totalPages,currentPage+3)%> 
               <%start=1%> 
@@ -81,15 +80,15 @@
             <%for(let i=start;i<=limit;i++){%> 
               <%if(i==currentPage){%>
                 <li class="page-item active" aria-current="page">
-                  <a class="page-link" href="/manager/alltasks/<%=i%>"><%=i%> <span class="sr-only">(current)</span></a>
+                  <a class="page-link" href="/manager/tasks/<%=i%>"><%=i%> <span class="sr-only">(current)</span></a>
                 </li>
               <%}else{%>
                 <li class="page-item">
-                  <a class="page-link" href="/manager/alltasks/<%=i%>"><%=i%></a>
+                  <a class="page-link" href="/manager/tasks/<%=i%>"><%=i%></a>
                 </li>
               <%}%> 
             <%}%>
-            <li class="page-item"><a class="page-link" href="/manager/alltasks/<%=totalPages%>">Last</a></li>
+            <li class="page-item"><a class="page-link" href="/manager/tasks/<%=totalPages%>">Last</a></li>
           </ul>
         </nav>
       </div>

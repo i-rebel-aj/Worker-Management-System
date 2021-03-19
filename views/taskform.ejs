@@ -15,16 +15,10 @@
             <option value="<%=worker.email%>"><%=worker.email%></option>  
           <%})%>
         </select> 
-        <!--
-          <%workers.forEach(function(worker){%>
-              <input name="<%=worker.email%>" type="checkbox"/>
-              <label for="worker-email"><%=worker.email%></label>
-              <br>  
-            <%})%>
-          -->
         <label for="inputName" class="sr-only">Task description</label>
         <input type="text" class="form-control" placeholder="Task Description"  name="description" required autofocus>
-        <input type="date" id="birthday" name="deadline">
+        <label for="inputDate" class="sr-only">Task deadline</label>
+        <input type="date" id="birthday" name="deadline" required>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
       </form>
 </div>
