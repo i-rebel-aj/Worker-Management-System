@@ -10,18 +10,20 @@
     >
       <div class="sidebar-sticky pt-3">
         <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link" href="/manager/tasks"> All Tasks </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/task"> Assign Task </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/manager/tasks/completed"> Completed Tasks </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/manager/tasks/pending"> Pending Tasks </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/<%=currentUser.Type.toLowerCase()%>/tasks"> All Tasks </a>
+              </li>
+              <% if(currentUser.Type==='Manager'){%>
+                <li class="nav-item">
+                  <a class="nav-link" href="/task"> Assign Task </a>
+                </li>
+              <%} %> 
+              <li class="nav-item">
+                <a class="nav-link" href="/<%=currentUser.Type.toLowerCase()%>/tasks/completed"> Completed Tasks </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/<%=currentUser.Type.toLowerCase()%>/tasks/pending"> Pending Tasks </a>
+              </li> 
         </ul>
       </div>
     </nav>
@@ -41,8 +43,13 @@
               <th scope="col">Status</th>
               <th scope="col">Assigned Date</th>
               <th scope="col">Deadline</th>
-              <th scope="col">View Submission</th>
-              <th scope="col">Edit task</th>
+              <% if(currentUser.Type==='Manager'){%>
+                <th scope="col">View Submission</th>
+                <th scope="col">Edit task</th>
+                <th scope="col">Delete task</th>
+              <%}else{%>
+                <th scope="col">Make Submission</th>
+              <% } %> 
             </tr>
           </thead>
           <tbody>
@@ -52,16 +59,27 @@
                 <td><% task.AssignedTo.forEach((person)=>{%>
                     <%= person.email %>
                   <%})  %> </td>
-                <td><% if(!task.completeStatus){%>
+                <td><% if(!task.completeStatus&&!task.underVerificationStatus){%>
                   <span class="badge badge-pill badge-warning">Pending</span>
-                  <%}else{%>
-                    <span class="badge badge-pill badge-success">Done</span>
-                    <%} %> </td>
+                  <%}else if(!task.completeStatus&&task.underVerificationStatus){%>
+                    <span class="badge badge-pill badge-info">Under Review</span>
+                  <%}else {%>
+                      <span class="badge badge-pill badge-success">Done</span>
+                  <%} %> 
+                </td>
                 <td><%= task.createdAt.toDateString() %></td>
                 <td><%= task.deadline.toDateString() %> </td>
-                <td>@mdo</td>
-                <!--Only to redirect to task form-->
-                <td><a href="/task/<%=task._id%>/edit" class="btn btn-md btn-info">Edit Task</a></td>
+                <% if(currentUser.Type==='Manager') {%>
+                  <% if(task.underVerificationStatus===false){%>
+                    <td>No submission yet</td>
+                    <%}else{ %>
+                      <td><a href="/task/<%=task._id%>/submission" class="btn btn-md btn-secondary">View Submission</a></td>
+                    <% } %>  
+                      <td><a href="/task/<%=task._id%>/edit" class="btn btn-md btn-info">Edit Task</a></td>
+                      <td><form action="/task/<%=task._id%>?_method=DELETE" method="POST"><button type="submit" class="btn btn-danger">Delete Task</button></form></td>
+                <% }else{%>
+                  <td><a href="/worker/task/<%=task._id%>/submission" class="btn btn-md btn-primary">Make Submission</a></td>
+                <%} %>  
               </tr>
             <% }); %> 
           </tbody>

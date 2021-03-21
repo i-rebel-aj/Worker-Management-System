@@ -22,6 +22,7 @@ app.use(flash());
 app.use(cookieParser());
 app.set("view engine", "ejs");
 app.use('/public', express.static('public'));
+app.use('/uploads', express.static('uploads'));
 app.use(methodOverride("_method"));
 app.use(session({
     resave: false,
@@ -44,6 +45,7 @@ app.use(function(req, res, next) {
 const authRoutes=require('./routes/auth')
 const managerRoutes=require('./routes/manager')
 const taskRoutes=require('./routes/tasks')
+const workerRoutes=require('./routes/worker')
 app.get('/', (req, res)=>{
     res.render('home')
 })
@@ -51,6 +53,7 @@ app.get('/', (req, res)=>{
 app.use('/user/auth', authRoutes)
 app.use('/manager', managerRoutes)
 app.use('/task', taskRoutes)
+app.use('/worker', workerRoutes)
 app.get('*', (req, res)=>{
     res.render('error')
 })

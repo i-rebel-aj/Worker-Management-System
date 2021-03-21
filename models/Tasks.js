@@ -18,19 +18,31 @@ const taskSchema=new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },
-        docsFilePath:{
+        taskdocsFilePath:{
             ManagerDocs:[
                 {
                     path: String,
                     description: String
                 }
-            ],
-            WorkerDocs:[
-                {
-                    path: String,
-                    discription: String
-                }
             ]
+        },
+        submission:{
+            submissionDescription:{
+                type: String
+            },
+            WorkerDocs: [{
+                path: String,
+                name: String,
+                mime_type: String,
+                file_type: String
+            }],
+            submissionDate:{
+                type: Date
+            },
+            submittedBy:{
+                //Keep email for the time being
+                type: String
+            }
         },
         completeStatus:{
             type: Boolean,

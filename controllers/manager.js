@@ -1,14 +1,6 @@
 const {User} = require("../models/User");
 const {Task}=require('../models/Tasks')
-
-const pagination= async (req)=>{
-    const pageInfo={}
-    pageInfo.perPage=10
-    pageInfo.page=req.params.page || 1
-    pageInfo.totalTasks=await Task.find({AssignedBy: req.session.user._id})
-    pageInfo.totalPages=Math.ceil(pageInfo.totalTasks.length/pageInfo.perPage)
-    return pageInfo
-}
+const {pagination}=require('../lib/helper')
 exports.displayMangerHome= async(req, res)=>{
     try{
         const pageInfo=await pagination(req)

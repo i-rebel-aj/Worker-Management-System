@@ -1,0 +1,19 @@
+<%-include("./partials/header")-%>
+<head>
+    <link rel="stylesheet" href="/public/auth-form.css">
+</head>
+<div class="text-center">
+    <form class="form-signin" action="/task/<%=task._id%>/submission" method="POST" enctype="multipart/form-data">
+        <h1 class="h3 mb-3 font-weight-normal">Make your submission for task <%= task.name %>  here</h1>
+        <div class="form-group">
+            <label>Submission details</label>
+            <textarea class="form-control" placeholder="Submission description" name="description" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlFile1">Attack any image</label>
+            <input type="file" class="form-control-file" id="exampleFormControlFile1" name="submission_image" required>
+          </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+      </form>
+</div>
+<%-include("./partials/footer")-%>

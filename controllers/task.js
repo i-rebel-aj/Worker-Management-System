@@ -1,14 +1,53 @@
 const {User} = require("../models/User");
 const {Task}=require('../models/Tasks')
+//Setting up multer to store task-submissions
+
+exports.addSubmission= async(req, res)=>{
+    console.log(req.body)
+    // console.log(req.file)
+    const taskId= req.params.id
+    try{
+        const foundTask= await Task.findById(taskId)
+        if(!foundTask){
+            req.flash('error', 'Task not found')
+            return res.redirect('/error')
+        }
+        if(foundTask.underVerificationStatus){
+            req.flash('error', 'You or your teammate has already made an submission')
+            return res.redirect('back')
+        }
+        const fileInfo={}
+        fileInfo.name=req.file.originalname
+        fileInfo.path=req.file.path
+        fileInfo.mime_type= req.file.mimetype
+        console.log(fileInfo)
+        let str=req.file.mimetype
+        str=str.replace('/', ' ')
+        str=str.split(' ')
+        fileInfo.file_type=str[0]
+        foundTask.submission.WorkerDocs.push(fileInfo)
+        foundTask.submission.submissionDescription=req.body.description
+        foundTask.submission.submissionDate=Date.now()
+        foundTask.submission.submittedBy= req.session.user.email 
+        foundTask.underVerificationStatus=true
+        await foundTask.save()
+        req.flash('success', 'Task submited sucessfully, review pending')
+        return res.redirect('/worker')
+    }catch(err){
+        console.log(err)
+        return res.redirect('/error')
+    }
+    
+}
 
 exports.renderTaskform=async (req, res)=>{
     try{
         const workerList= await User.find({Type: 'Worker'})
         //console.log(workerList)
-        res.render('taskform', {workers: workerList})
+        return res.render('taskform', {workers: workerList})
     }catch(err){
         console.log(err)
-        res.redirect('/')
+        return res.redirect('/')
     }
 }
 
@@ -17,11 +56,11 @@ exports.addTask = async (req, res)=>{
     try{
         if(!req.body||!req.body.task_name||!req.body.description){
             req.flash('error', 'Please fill all the fields')
-            res.redirect('/task')
+            return res.redirect('/task')
         }
         if(!req.body.assignedworkers){
             req.flash('error', 'Must select atleast one worker')
-            res.redirect('/task')
+            return res.redirect('/task')
         }else{
             const workerList=req.body.assignedworkers
             const name=req.body.task_name
@@ -32,7 +71,7 @@ exports.addTask = async (req, res)=>{
             const task=new Task(newTask)
             if(deadline.getTime()<today.getTime()){
                 req.flash('error', 'Please enter a valid date, i.e one in future')
-                res.redirect('/task')
+                return res.redirect('/task')
             }
             //console.log(task)
             if(typeof(workerList)==='object'){
@@ -48,36 +87,46 @@ exports.addTask = async (req, res)=>{
             //console.log(task)
             await task.save()
             req.flash('success', 'Task added successfully')
-            res.redirect('/manager')
+            return res.redirect('/manager/tasks/1')
         }
     }catch(err){
         console.log(err)
-        res.redirect('/')
+        return res.redirect('/')
     }
 }
 
 exports.markCompleted = async (req, res)=>{
     const taskId= req.params.id
     try{
+        if(!req.body.points){
+            req.flash('error', 'Points not alloted')
+            return res.redirect('back')
+        }
         const foundtask= await Task.findById(taskId)
         if(!foundtask){
             req.flash('error', 'Task not found')
-            res.redirect('/manager')
+            return res.redirect('/manager/tasks/1')
         }else{
             if(foundtask.completeStatus){
                 req.flash('error', 'Task is already completed')
-                res.redirect('/manager')
+                return res.redirect('/manager/tasks/1')
             }else{
                 foundtask.completeStatus=true
+                //Assigning points to user
+                for (const workerId of foundtask.AssignedTo) {
+                    let foundUser=await User.findById(workerId)
+                    foundUser.rewardPoints+=foundUser.rewardPoints+req.body.points
+                    await foundUser.save()
+                }
                 await foundtask.save()
-                req.flash('success', 'Task marked completed')
+                req.flash('success', `Task marked completed, given ${req.body.points} to the assigned users`)
                 //Redirect to manager home page
-                res.redirect('/manager')
+                return res.redirect('/manager/tasks/1')
             }
         }
     }catch(err){
         console.log(err)
-        res.redirect('/error')
+        return res.redirect('/error')
     }  
 }
 exports.displayEditTaskform= async (req, res)=>{
@@ -87,17 +136,17 @@ exports.displayEditTaskform= async (req, res)=>{
         const workers= await User.find({Type: 'Worker'})
         if(!workers){
             req.flash('error', 'There are no workers to assign task to')
-            res.redirect('/')
+            return res.redirect('/')
         }
         if(!foundTask){
             req.flash('error', 'Task not found')
-            res.redirect('/error')
+            return res.redirect('/error')
         }else{
-            res.render('editTaskForm', {task: foundTask, workers: workers})
+            return res.render('editTaskForm', {task: foundTask, workers: workers})
         }
     }catch(err){
         console.log(err)
-        res.redirect('/')
+        return res.redirect('/')
     }
     
 }
@@ -157,5 +206,33 @@ exports.editTask= async (req, res)=>{
         await foundTask.save()
         req.flash('success', `Edited Task ${respone} for ${foundTask.name}`)
         res.redirect('/manager/tasks/1')
+    }
+}
+
+exports.deleteTask = async(req, res)=>{
+    const taskId= req.params.id
+    try{    
+        const foundTask=await Task.findByIdAndDelete(taskId)
+        if(!foundTask){
+            req.flash('error', 'Invalid Id')
+            return res.redirect('/error')
+        }else{
+            req.flash('success', 'Deleted Task')
+            return res.redirect('back')
+        }
+    }catch(err){
+        return res.redirect('back')
+    }
+    
+}
+
+exports.displaySubmissionPage= async(req, res)=>{
+    try{
+        const taskId=req.params.id
+        const foundTask= await Task.findById(taskId)
+        return res.render('viewsubmission', {task: foundTask})
+    }catch(err){
+        console.log(err)
+        return res.redirect('/error')
     }
 }
