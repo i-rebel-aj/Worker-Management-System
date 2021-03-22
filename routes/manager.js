@@ -12,11 +12,11 @@ router.get('/tasks/completed', [isLoggedIn,isManager],(req, res)=>{
 router.get('/tasks/pending',[isLoggedIn,isManager], (req, res)=>{
     res.redirect('/manager/tasks/pending/1')
 })
-router.get('/tasks/date',[isLoggedIn,isManager], (req, res)=>{
-    res.redirect('/manager/tasks/date/1')
-})
-router.get('/tasks/:page',[isLoggedIn,isManager],displayMangerHome)
+// router.get('/tasks/date',[isLoggedIn,isManager], (req, res)=>{
+//     res.redirect('/manager/tasks/date/1')
+// })
+router.get('/tasks/date',[isLoggedIn,isManager],searchByDate)
 router.get('/tasks/completed/:page',[isLoggedIn,isManager],displayCompletedTasks)
 router.get('/tasks/pending/:page',[isLoggedIn,isManager],displayPendingTasks)
-router.get('/tasks/date/:page',[isLoggedIn,isManager],searchByDate)
+router.get('/tasks/:page',[isLoggedIn,isManager],displayMangerHome)
 module.exports=router

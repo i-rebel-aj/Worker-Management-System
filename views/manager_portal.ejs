@@ -37,7 +37,7 @@
       >
         <h1 class="h2">Dashboard</h1>
         <% if(currentUser.Type==='Manager'){%>
-          <form class="form-inline" action="/task/date" method="GET">
+          <form class="form-inline" action="/manager/tasks/date" method="GET">
             <label>Start Date</label>
             <input type="date" class="form-control mb-2 mr-sm-2" name="startDate" required>
             <label>End Date</label>
@@ -45,8 +45,8 @@
             <button type="submit" class="btn btn-primary mb-2">Search</button>
           </form>
         <%}else{%>
-          <form class="form-inline" action="/task/name" method="GET">
-            <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="Task Name" required>
+          <form class="form-inline" action="/worker/tasks/name" method="GET">
+            <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="Task Name" required name="name">
             <button type="submit" class="btn btn-primary mb-2">Search</button>
           </form>
         <%} %> 
