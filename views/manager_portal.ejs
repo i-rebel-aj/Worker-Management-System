@@ -17,6 +17,10 @@
                 <li class="nav-item">
                   <a class="nav-link" href="/task"> Assign Task </a>
                 </li>
+              <%}else{%>
+                <li class="nav-item">
+                  <a class="nav-link" href="/task/submission"> View Reward history </a>
+                </li>
               <%} %> 
               <li class="nav-item">
                 <a class="nav-link" href="/<%=currentUser.Type.toLowerCase()%>/tasks/completed"> Completed Tasks </a>
@@ -32,6 +36,21 @@
         class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
       >
         <h1 class="h2">Dashboard</h1>
+        <% if(currentUser.Type==='Manager'){%>
+          <form class="form-inline" action="/task/date" method="GET">
+            <label>Start Date</label>
+            <input type="date" class="form-control mb-2 mr-sm-2" name="startDate" required>
+            <label>End Date</label>
+            <input type="date" class="form-control mb-2 mr-sm-2" name="endDate" required>
+            <button type="submit" class="btn btn-primary mb-2">Search</button>
+          </form>
+        <%}else{%>
+          <form class="form-inline" action="/task/name" method="GET">
+            <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="Task Name" required>
+            <button type="submit" class="btn btn-primary mb-2">Search</button>
+          </form>
+        <%} %> 
+        
       </div>
       <div class="container">
         <h4>Tasks assigned by you</h4>
@@ -49,6 +68,7 @@
                 <th scope="col">Delete task</th>
               <%}else{%>
                 <th scope="col">Make Submission</th>
+                <th scope="col">Points awarded</th>
               <% } %> 
             </tr>
           </thead>
@@ -80,13 +100,18 @@
                 <% }else{%>
                   <td><a href="/worker/task/<%=task._id%>/submission" class="btn btn-md btn-primary">Make Submission</a></td>
                 <%} %>  
+                <% if(currentUser.Type==='Worker'&&task.completeStatus){%>
+                  <td><%= task.pointsEarned %></td>
+                <%}else if(currentUser.Type==='Worker'&& !task.completeStatus){%>
+                  <td>You have not completed task yet</td>
+                <%} %> 
               </tr>
             <% }); %> 
           </tbody>
         </table>
         <nav aria-label="Page navigation example">
           <ul class="pagination">
-            <li class="page-item"><a class="page-link" href="/manager/alltasks/1">First</a></li>
+            <li class="page-item"><a class="page-link" href="/<%=currentUser.Type.toLowerCase()%>/tasks/1">First</a></li>
             <%var limit%> <%var start%> 
             <%if(currentPage>=2){%>
               <%limit=Math.min(totalPages, currentPage+2)%>
@@ -98,15 +123,15 @@
             <%for(let i=start;i<=limit;i++){%> 
               <%if(i==currentPage){%>
                 <li class="page-item active" aria-current="page">
-                  <a class="page-link" href="/manager/tasks/<%=i%>"><%=i%> <span class="sr-only">(current)</span></a>
+                  <a class="page-link" href="/<%=currentUser.Type.toLowerCase()%>/tasks/<%=i%>"><%=i%> <span class="sr-only">(current)</span></a>
                 </li>
               <%}else{%>
                 <li class="page-item">
-                  <a class="page-link" href="/manager/tasks/<%=i%>"><%=i%></a>
+                  <a class="page-link" href="/<%=currentUser.Type.toLowerCase()%>/tasks/<%=i%>"><%=i%></a>
                 </li>
               <%}%> 
             <%}%>
-            <li class="page-item"><a class="page-link" href="/manager/tasks/<%=totalPages%>">Last</a></li>
+            <li class="page-item"><a class="page-link" href="/<%=currentUser.Type.toLowerCase()%>/tasks/<%=totalPages%>">Last</a></li>
           </ul>
         </nav>
       </div>

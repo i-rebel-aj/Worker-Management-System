@@ -115,9 +115,11 @@ exports.markCompleted = async (req, res)=>{
                 //Assigning points to user
                 for (const workerId of foundtask.AssignedTo) {
                     let foundUser=await User.findById(workerId)
-                    foundUser.rewardPoints+=foundUser.rewardPoints+req.body.points
+                    //Make sure arithmetic is on number
+                    foundUser.rewardPoints=Number(foundUser.rewardPoints) +Number(req.body.points)
                     await foundUser.save()
                 }
+                foundtask.pointsEarned=req.body.points
                 await foundtask.save()
                 req.flash('success', `Task marked completed, given ${req.body.points} to the assigned users`)
                 //Redirect to manager home page

@@ -55,6 +55,10 @@ const taskSchema=new mongoose.Schema(
         deadline:{
             type: Date,
             required: true
+        },
+        pointsEarned: {
+            type: Number,
+            default: 0
         }
     },{timestamps: true}
 )

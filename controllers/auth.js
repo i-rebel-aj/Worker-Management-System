@@ -75,6 +75,21 @@ exports.userLogin = async (req, res) => {
   }
 };
 
+exports.editUser = async (req, res)=>{
+    console.log(req.body)
+    const user= await User.findById(req.session.user._id)
+    if(req.body.name){
+        user.name= req.body.name
+    }
+    if(req.body.email){
+        user.email= req.body.email
+    }
+    await user.save()
+    req.session.user = user;
+    req.flash('success', 'Details added successfully')
+    res.redirect('back')
+}
+
 exports.logout = async(req,res)=>{
     //console.log(req.session)
     if (req.session) {

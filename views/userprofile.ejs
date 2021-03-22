@@ -1,0 +1,15 @@
+<%-include("./partials/header")-%>
+<head>
+    <link rel="stylesheet" href="/public/auth-form.css">
+</head>
+<div class="text-center">
+    <form class="form-signin" action="/user/auth/<%=currentUser._id%>?_method=PUT" method="POST">
+        <h1 class="h3 mb-3 font-weight-normal">Please Edit details, here!</h1>
+        <label for="inputEmail">Email address</label>
+        <input type="email" id="inputEmail" class="form-control" placeholder="<%= currentUser.email %> " value="<%= currentUser.email %>" name="email" required autofocus>
+        <label for="inputName">Name</label>
+        <input type="text" class="form-control" placeholder="<%= currentUser.name %> " value="<%= currentUser.name %>" name="name" required autofocus>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Edit profile</button>
+      </form>
+</div>
+<%-include("./partials/footer")-%>
